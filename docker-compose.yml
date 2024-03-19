@@ -12,31 +12,39 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data/
+    networks:
+      - boards
 
-  server:
-    restart: always
-    build:
-      dockerfile: Dockerfile
-      context: './server'
-    depends_on:
-      - postgres
-    volumes:
-      - /server/node_modules
-      - ./server:/api
-    ports:
-      - '3001:3000'
+  # server:
+  #   restart: always
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: './server'
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - /server/node_modules
+  #     - ./server:/api
+  #   # environment:
+  #   #   - PORT=$5217
+  #   ports:
+  #     - '3001:3000'
+  #   networks:
+  #     - boards
 
-  client:
-    build:
-      dockerfile: Dockerfile
-      context: "./client"
-    depends_on:
-      - server
-    volumes:
-      - /client/node_modules
-      - ./client:/app
-    ports:
-      - "5173:5173"
+  # client:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: "./client"
+  #   depends_on:
+  #     - server
+  #   volumes:
+  #     - /client/node_modules
+  #     - ./client:/app
+  #   ports:
+  #     - "5173:5173"
 
+networks:
+  boards:
 volumes:
   pg_data:
