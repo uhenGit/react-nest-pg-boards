@@ -1,7 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BoardDto } from './dto';
+import { CreateBoardDto } from './dto';
 import { BoardType } from './boards.types';
+import { createHash } from 'crypto';
 
 @Injectable({})
 export class BoardService {
@@ -30,11 +31,15 @@ export class BoardService {
     }
   }
 
-  async createBoard(dto: BoardDto): Promise<BoardType> {
+  async createBoard(dto: CreateBoardDto): Promise<BoardType> {
     try {
+      const hashedName = createHash('sha1')
+        .update(dto.boardName)
+        .digest('base64');
       return this.prismaService.board.create({
         data: {
-          boardId: dto.boardId,
+          boardId: hashedName,
+          boardName: dto.boardName,
         },
       });
     } catch (err) {

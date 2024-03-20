@@ -9,7 +9,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { BoardService } from './boards.service';
-import { BoardDto } from './dto';
+import { CreateBoardDto } from './dto';
 import { BoardType } from './boards.types';
 
 @Controller('boards')
@@ -23,7 +23,7 @@ export class BoardController {
 
   @Post('create-board')
   @HttpCode(HttpStatus.CREATED)
-  async createBoard(@Body() dto: BoardDto): Promise<BoardType> {
+  async createBoard(@Body() dto: CreateBoardDto): Promise<BoardType> {
     return this.boardService.createBoard(dto);
   }
 
