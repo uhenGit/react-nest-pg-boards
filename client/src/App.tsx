@@ -1,32 +1,16 @@
-import { useEffect } from 'react';
-import './App.css'
+import { observer } from 'mobx-react-lite';
+import BoardLoad from './components/BoardLoad';
+import BoardContainer from './components/BoardContainer';
+import board from './stores/BoardStore';
 
-function App() {
-	const data = async (): Promise<object> => {
-    const input: string = encodeURIComponent('first try');
-		const response: Response = await fetch(
-		`http://localhost:3000/boards/get-board/${input}`,
-		{
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		console.log('res111: ', response);
-		const data: object = await response.json();
-		console.log('data: ', data);
-		return data;		
-	}
-
-	useEffect(() => {
-		data();
-	}, []);
-
+const App = observer(() => {
+  const { isBoardLoaded } = board;
   return (
     <>
-     <h2>Hello</h2>
+      <BoardLoad />
+     { isBoardLoaded && <BoardContainer /> }
     </>
   )
-}
+})
 
 export default App

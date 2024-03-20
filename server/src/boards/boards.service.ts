@@ -33,8 +33,9 @@ export class BoardService {
 
   async createBoard(dto: CreateBoardDto): Promise<BoardType> {
     try {
+      const uniqBoardName = `${dto.boardName}${Date.now()}`;
       const hashedName = createHash('sha1')
-        .update(dto.boardName)
+        .update(uniqBoardName)
         .digest('base64');
       return this.prismaService.board.create({
         data: {
