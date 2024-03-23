@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
   Body,
   Param,
@@ -19,17 +20,22 @@ export class CardController {
   @Get('get-board-cards/:boardId')
   @HttpCode(HttpStatus.OK)
   async getCards(@Param('boardId') boardId: string): Promise<CardType[]> {
-    const res = await this.cardService.getCardsByBoardId(boardId);
-    console.log('GET: ', res);
-    return res;
+    return await this.cardService.getCardsByBoardId(boardId);
   }
 
   @Post('create-card')
   @HttpCode(HttpStatus.CREATED)
   async createCard(@Body() dto: CreateCardDto): Promise<CardType> {
-    const res = await this.cardService.createCard(dto);
-    console.log('CREATE: ', res);
-    return res;
+    return this.cardService.createCard(dto);
+  }
+
+  @Patch('update-card')
+  @HttpCode(HttpStatus.OK)
+  async updateCard(
+    @Body('cardBody') dto: CreateCardDto,
+    @Body('cardId') cardId: string,
+  ): Promise<CardType> {
+    return this.cardService.updateCard(dto, cardId);
   }
 
   @Delete('delete-card/:boardId/:cardId')
@@ -38,8 +44,6 @@ export class CardController {
     @Param('boardId') boardId: string,
     @Param('cardId') cardId: string,
   ): Promise<CardType> {
-    const res = await this.cardService.deleteCard(boardId, cardId);
-    console.log('DELETE: ', res);
-    return res;
+    return this.cardService.deleteCard(boardId, cardId);
   }
 }

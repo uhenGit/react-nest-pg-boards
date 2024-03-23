@@ -8,7 +8,7 @@ import { createHash } from 'crypto';
 export class BoardService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getBoardById(boardId: string): Promise<BoardType | null> {
+  async loadBoardById(boardId: string): Promise<BoardType | null> {
     try {
       return this.prismaService.board.findFirst({
         where: {
@@ -53,14 +53,47 @@ export class BoardService {
     }
   }
 
+  async updateBoard(boardName: string, boardId: string): Promise<BoardType> {
+    try {
+      return this.prismaService.board.update({
+        where: {
+          id: boardId,
+        },
+        data: {
+          boardName,
+        },
+      });
+    } catch (err) {
+      throw new HttpException(
+        {
+          message: 'Update board error',
+        },
+        HttpStatus.BAD_REQUEST,
+        {
+          cause: err,
+        },
+      );
+    }
+  }
+
   // broken id throws an unhandled error
   async deleteBoard(id: string): Promise<BoardType> {
     try {
-      return this.prismaService.board.delete({
-        where: {
-          id,
-        },
-      });
+      // eslint-disable-next-line
+      const [_, board] = await Promise.all([
+        this.prismaService.card.deleteMany({
+          where: {
+            boardId: id,
+          },
+        }),
+        this.prismaService.board.delete({
+          where: {
+            id,
+          },
+        }),
+      ]);
+
+      return board;
     } catch (err) {
       throw new HttpException(
         {

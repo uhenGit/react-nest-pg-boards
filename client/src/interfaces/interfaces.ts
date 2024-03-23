@@ -6,9 +6,16 @@ export interface Board {
 }
 
 export interface Card {
-  id: string;
+  id?: string;
   title: string;
   description: string;
-  status: string;
-  boardId: string;
+  status?: string;
+  boardId?: string;
+  order?: number;
+}
+
+export interface Column {
+  columnName: string;
+  id: number;
+  cards: Card[];
 }

@@ -1,7 +1,7 @@
 import {
   Controller,
-  Get,
   Post,
+  Patch,
   Delete,
   Body,
   Param,
@@ -16,15 +16,24 @@ import { BoardType } from './boards.types';
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
-  @Get('get-board/:boardId')
-  async getBoard(@Param('boardId') boardId: string): Promise<BoardType | null> {
-    return this.boardService.getBoardById(boardId);
+  @Post('load-board')
+  async loadBoard(@Body('boardId') boardId: string): Promise<BoardType | null> {
+    return this.boardService.loadBoardById(boardId);
   }
 
   @Post('create-board')
   @HttpCode(HttpStatus.CREATED)
   async createBoard(@Body() dto: CreateBoardDto): Promise<BoardType> {
     return this.boardService.createBoard(dto);
+  }
+
+  @Patch('update-board')
+  @HttpCode(HttpStatus.OK)
+  async updateBoard(
+    @Body('boardName') boardName: string,
+    @Body('boardId') id: string,
+  ): Promise<BoardType> {
+    return this.boardService.updateBoard(boardName, id);
   }
 
   @Delete('delete-board/:id')

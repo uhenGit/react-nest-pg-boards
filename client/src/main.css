@@ -1,0 +1,16 @@
+html, body, #root {
+  height: 100%;
+  min-height: 100%;
+}
+
+.todo {
+  background-color: #d3d3d3 !important;
+}
+
+.inProgress {
+  background-color: #ffe596 !important;
+}
+
+.done {
+  background-color: #8fff8f !important;
+}

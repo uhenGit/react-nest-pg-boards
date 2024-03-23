@@ -53,6 +53,28 @@ export class CardService {
     }
   }
 
+  async updateCard(dto: CreateCardDto, cardId: string): Promise<CardType> {
+    try {
+      return this.prismaService.card.update({
+        where: {
+          id: cardId,
+        },
+        data: {
+          title: dto.title,
+          description: dto.description,
+          status: dto.status,
+        },
+      });
+    } catch (err) {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async deleteCard(boardId: string, cardId: string): Promise<CardType> {
     try {
       return this.prismaService.card.delete({
