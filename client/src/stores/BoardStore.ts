@@ -194,12 +194,14 @@ class Boards {
       console.log('Delete card error: ', err);
     }
   }
-  // setColumns = (columns: any[]): void => {
-  //   console.log('STORE: ', columns);
-  //   runInAction(() => {
-  //     this.cards = 
-  //   })
-  // }
+  updateCards = (cards: Card[]): void => {
+    runInAction(() => {
+      this.cards = cards.map((card, idx) => ({
+        ...card,
+        order: idx,
+      }));
+    });
+  }
 }
 
 export default new Boards();
