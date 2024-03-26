@@ -38,6 +38,12 @@ export class CardController {
     return this.cardService.updateCard(dto, cardId);
   }
 
+  @Patch('update-cards-order')
+  @HttpCode(HttpStatus.OK)
+  async updateCardsOrder(@Body() cards: CardType[]): Promise<boolean> {
+    return this.cardService.updateCardsOrder(cards);
+  }
+
   @Delete('delete-card/:boardId/:cardId')
   @HttpCode(HttpStatus.OK)
   async deleteCard(

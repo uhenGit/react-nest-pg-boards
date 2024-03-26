@@ -8,9 +8,9 @@ import { createHash } from 'crypto';
 export class BoardService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async loadBoardById(boardId: string): Promise<BoardType | null> {
+  async loadBoardById(boardId: string): Promise<BoardType | HttpStatus> {
     try {
-      return this.prismaService.board.findFirst({
+      const board = await this.prismaService.board.findFirst({
         where: {
           boardId,
         },
@@ -18,6 +18,12 @@ export class BoardService {
           cards: true,
         },
       });
+
+      if (!board) {
+        return HttpStatus.NOT_FOUND;
+      }
+
+      return board;
     } catch (err) {
       throw new HttpException(
         {

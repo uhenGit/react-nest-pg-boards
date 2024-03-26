@@ -40,9 +40,7 @@ class Boards {
       .map((itemStatus, idx): Column => ({
         id: idx,
         columnName: itemStatus,
-        cards: this.cards
-          .filter(({ status }) => status === itemStatus)
-          // .sort((a, b) => a.order - b.order),
+        cards: this.cards.filter(({ status }) => status === itemStatus),
       }));
   }
 
@@ -59,11 +57,10 @@ class Boards {
         },
       );
       const board: Board = await response.json();
-      // console.log('board: ', board);
       runInAction(() => {
         this.board = {
-          boardName: board.boardName,
-          id: board.id,
+          boardName: board.boardName || 'Board not found',
+          id: board.id || '-1',
           boardId: board.boardId,
         };
         this.cards = board.cards || [];
@@ -107,13 +104,34 @@ class Boards {
         },
       );
       const updatedBoard: Board = await response.json();
-      console.log('UPDATE: ',this, updatedBoard);
       
       runInAction(() => {
         this.board = updatedBoard;
       })
     } catch (err) {
       console.log('Update board error: ', err);
+    }
+  }
+
+  deleteBoard = async (id: string): Promise<void> => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/boards/delete-board/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.ok) {
+        runInAction(() => {
+          this.board = { boardName: '' }
+        });
+      }
+    } catch (err) {
+      console.log('Delete board error: ', err);
     }
   }
 
@@ -134,6 +152,7 @@ class Boards {
         },
       );
       const newCard = await response.json();
+
       runInAction(() => {
         this.cards.push(newCard);
       })
@@ -161,6 +180,7 @@ class Boards {
         },
       );
       const updatedCard = await response.json();
+
       runInAction(() => {
         this.cards = this.cards.map((item) => {
           if (item.id === updatedCard.id) {
@@ -187,6 +207,7 @@ class Boards {
         },
       );
       const { id: deletedCardId } = await response.json();
+
       runInAction(() => {
         this.cards = this.cards.filter(({ id }) => id !== deletedCardId)
       });
@@ -194,13 +215,33 @@ class Boards {
       console.log('Delete card error: ', err);
     }
   }
-  updateCards = (cards: Card[]): void => {
-    runInAction(() => {
-      this.cards = cards.map((card, idx) => ({
-        ...card,
-        order: idx,
-      }));
-    });
+
+  updateCards = async (cards: Card[]): Promise<void> => {
+    const reorderedCards = cards.map((card, idx) => ({
+      ...card,
+      order: idx,
+    }));
+    try {
+      const response = await fetch(
+        'http://localhost:3000/cards/update-cards-order',
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reorderedCards),
+        },
+      );
+      const success = await response.json();
+
+      if (success) {
+        runInAction(() => {
+          this.cards = reorderedCards;
+        });
+      }
+    } catch (err) {
+      console.log('update order error: ', err);
+    }
   }
 }
 

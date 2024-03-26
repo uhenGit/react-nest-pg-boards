@@ -75,6 +75,33 @@ export class CardService {
     }
   }
 
+  async updateCardsOrder(cards: CardType[]): Promise<boolean> {
+    try {
+      await this.prismaService.$transaction(async (prisma) => {
+        await Promise.all(
+          cards.map(async (card) => {
+            return prisma.card.update({
+              where: {
+                id: card.id,
+              },
+              data: {
+                ...card,
+              },
+            });
+          }),
+        );
+      });
+      return true;
+    } catch (err) {
+      throw new HttpException(
+        {
+          message: 'Update card order error',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async deleteCard(boardId: string, cardId: string): Promise<CardType> {
     try {
       return this.prismaService.card.delete({

@@ -17,7 +17,10 @@ export class BoardController {
   constructor(private boardService: BoardService) {}
 
   @Post('load-board')
-  async loadBoard(@Body('boardId') boardId: string): Promise<BoardType | null> {
+  @HttpCode(HttpStatus.OK)
+  async loadBoard(
+    @Body('boardId') boardId: string,
+  ): Promise<BoardType | HttpStatus> {
     return this.boardService.loadBoardById(boardId);
   }
 

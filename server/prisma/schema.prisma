@@ -32,7 +32,7 @@ model Card {
   title       String
   description String
   status      String
-  order       Int      @default(autoincrement())
+  order       Int?
   Board       Board    @relation(fields: [boardId], references: [id])
   boardId     String
 

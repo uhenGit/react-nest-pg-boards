@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BoardStore from '../stores/BoardStore';
 import { Card } from '../interfaces/interfaces';
 import { Indicator } from './Indicator';
@@ -20,10 +20,18 @@ const CardItem = ({
 }: CardInfo) => {
   const { title, description } = cardInfo;
   const { createCard, updateCard, deleteCard } = BoardStore;
+
+  useEffect(() => {
+    if (editMode && titleInput.current) {
+      titleInput.current.focus();
+    }
+  }, [editMode]);
   const [ cardBody, setNewCardBody ] = useState({
     newTitle: title,
     newDescription: description,
   });
+  const titleInput = useRef<HTMLInputElement>(null);
+
   const handleInput = (evt: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = evt.currentTarget;
     setNewCardBody((prevState) => ({ ...prevState, [name]: value }))
@@ -67,6 +75,7 @@ const CardItem = ({
             <label className='mb-1 form-label px-1'>
               Card title:
               <input
+                ref={ titleInput }
                 value={ cardBody.newTitle }
                 onChange={ handleInput }
                 name='newTitle'

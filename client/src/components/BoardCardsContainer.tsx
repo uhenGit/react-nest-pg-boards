@@ -5,8 +5,10 @@ import BoardStore from '../stores/BoardStore';
 
 const BoardCardsContainer = observer(() => {
   const { cardsColumnsByStatus, cards, updateCards } = BoardStore;
+
   const [ isShowCardForm, setIsShowCardForm ] = useState(false);
   const [ selectedId, setSelectedId ] = useState('');
+
   const handleDragStart = (evt: React.DragEvent<HTMLDivElement>, cardId: string): void => {
     evt.dataTransfer.setData('cardId', cardId);
   }

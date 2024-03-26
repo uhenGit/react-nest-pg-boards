@@ -2,6 +2,7 @@ import { useState } from 'react';
 import BoardStore from '../stores/BoardStore';
 
 const CreateBoard = () => {
+  const { createBoard, board } = BoardStore;
   const [ isFormShow, toggleIsFormShow ] = useState(false);
   const [ boardName, setBoardName ] = useState('');
   const toggleShowBoardForm = (): void => {
@@ -17,7 +18,7 @@ const CreateBoard = () => {
       return;
     }
 
-    await BoardStore.createBoard(boardName);
+    await createBoard(boardName);
     setBoardName('');
     toggleIsFormShow(false);
   }
@@ -46,12 +47,15 @@ const CreateBoard = () => {
                 cancel
               </button>
             </form>
-          : <button
-              onClick={ toggleShowBoardForm }
-              className="btn btn-info btn-sm mt-5"
-            >
-              create
-            </button>
+          : <div className='d-flex flex-column justify-content-center mt-3 w-25'>
+              { board.id === '-1' && <h5 className='text-center'>Board did not found</h5> }
+               <button
+                onClick={ toggleShowBoardForm }
+                className="btn btn-info btn-sm mt-5"
+              >
+                create
+              </button>
+            </div>
       }
     </div>
   )
