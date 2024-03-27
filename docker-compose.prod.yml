@@ -11,13 +11,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data/
-    networks:
-      - boards
-
+      - pg_data:/var/lib/postgresql/data
+    
   server:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
       context: ./server
     depends_on:
       - postgres
@@ -29,22 +27,20 @@ services:
       POSTGRES_DB: tasks_db
     ports:
       - '3000:3000'
-    networks:
-      - boards
 
-  client:
+  client_build:
     build:
-      dockerfile: Dockerfile
-      context: "./client"
+      dockerfile: Dockerfile.prod
+      context: ./client
     volumes:
-      - ./client:/app
+      - ./client/dist:/app/dist
+  client_server:
+    image: nginx:1.25.4-alpine
     ports:
-      - "5173:5173"
-    networks:
-      - boards
+      - '80:80'
+    volumes:
+      - ./client/dist:/usr/share/nginx/html
 
-networks:
-  boards:
-    driver: bridge
 volumes:
   pg_data:
+      

@@ -1,5 +1,7 @@
 # client
 /client/node_modules
+/client/build
+/client/dist
 
 # server
 /server/dist
