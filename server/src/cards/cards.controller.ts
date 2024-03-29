@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Patch,
   Delete,
@@ -16,12 +15,6 @@ import { CardType } from './cards.types';
 @Controller('cards')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
-
-  @Get('get-board-cards/:boardId')
-  @HttpCode(HttpStatus.OK)
-  async getCards(@Param('boardId') boardId: string): Promise<CardType[]> {
-    return await this.cardService.getCardsByBoardId(boardId);
-  }
 
   @Post('create-card')
   @HttpCode(HttpStatus.CREATED)

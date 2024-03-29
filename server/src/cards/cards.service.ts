@@ -8,26 +8,6 @@ import { CardType } from './cards.types';
 export class CardService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getCardsByBoardId(boardId: string): Promise<CardType[]> {
-    try {
-      return this.prismaService.card.findMany({
-        where: {
-          boardId,
-        },
-      });
-    } catch (err) {
-      throw new HttpException(
-        {
-          message: 'Get cards error',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: err,
-        },
-      );
-    }
-  }
-
   async createCard(dto: CreateCardDto): Promise<CardType> {
     try {
       return this.prismaService.card.create({
